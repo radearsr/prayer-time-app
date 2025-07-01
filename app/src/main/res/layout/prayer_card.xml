@@ -1,0 +1,92 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/prayer_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="40dp"
+    android:paddingVertical="30dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/bg_prayer_card"
+    android:elevation="4dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Badge "Selanjutnya" -->
+    <TextView
+        android:id="@+id/badgeNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:layout_marginEnd="-8dp"
+        android:background="@drawable/bg_badge_next"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp"
+        android:text="Selanjutnya"
+        android:textColor="@android:color/white"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Icon emoji -->
+    <TextView
+        android:id="@+id/iconEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="🌤️"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Nama Sholat -->
+    <TextView
+        android:id="@+id/prayerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Ashar"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iconEmoji" />
+
+    <!-- Waktu Sholat -->
+    <TextView
+        android:id="@+id/prayerTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="15:30"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/prayerName" />
+
+    <!-- Decorative dot top-right -->
+    <View
+        android:id="@+id/decorativeDot1"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/decor_dot_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Decorative dot bottom-left -->
+    <View
+        android:id="@+id/decorativeDot2"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/decor_dot_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
