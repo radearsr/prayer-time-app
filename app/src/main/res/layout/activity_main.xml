@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background_light"
     tools:context=".MainActivity">
 
     <!-- Judul -->
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Jadwal Sholat"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="@color/decorative_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,16 +27,17 @@
 
     <ImageView
         android:id="@+id/iv_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="2dp"
         android:src="@drawable/ic_location"
-        app:layout_constraintBottom_toBottomOf="@id/location"
-        app:layout_constraintEnd_toStartOf="@id/location"
-        app:layout_constraintTop_toTopOf="@id/location" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_location"
+        app:layout_constraintEnd_toStartOf="@id/tv_location"
+        app:layout_constraintTop_toTopOf="@id/tv_location" />
 
     <!-- Lokasi -->
     <TextView
-        android:id="@+id/location"
+        android:id="@+id/tv_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -40,11 +45,20 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/ic_calendar"
+        app:layout_constraintBottom_toBottomOf="@id/tv_current_date"
+        app:layout_constraintEnd_toStartOf="@id/tv_current_date"
+        app:layout_constraintTop_toTopOf="@id/tv_current_date" />
 
     <!-- Tanggal Masehi -->
     <TextView
-        android:id="@+id/gregorianDate"
+        android:id="@+id/tv_current_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -53,18 +67,18 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/location" />
+        app:layout_constraintTop_toBottomOf="@id/tv_location" />
 
     <!-- Tanggal Hijriah -->
     <TextView
-        android:id="@+id/hijriDate"
+        android:id="@+id/tv_hijriah_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="25 Dzulqa'dah 1446 H"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gregorianDate" />
+        app:layout_constraintTop_toBottomOf="@id/tv_current_date" />
 
     <!-- Waktu Saat Ini -->
 
@@ -73,101 +87,160 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/sharp_access_time_24"
-        app:layout_constraintBottom_toBottomOf="@id/currentTime"
-        app:layout_constraintEnd_toStartOf="@id/currentTime"
-        app:layout_constraintTop_toTopOf="@id/currentTime" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_current_time"
+        app:layout_constraintEnd_toStartOf="@id/tv_current_time"
+        app:layout_constraintTop_toTopOf="@id/tv_current_time"
+        app:tint="@color/accent_blue" />
 
     <TextView
-        android:id="@+id/currentTime"
+        android:id="@+id/tv_current_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:fontFamily="monospace"
         android:text="15:30:12"
         android:textAlignment="center"
+        android:textColor="@color/accent_blue"
         android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hijriDate" />
+        app:layout_constraintTop_toBottomOf="@id/tv_hijriah_date" />
 
-    <!-- Grid Waktu Sholat (gunakan RecyclerView di implementasi nyata) -->
-    <LinearLayout
-        android:id="@+id/prayerGrid"
+    <!-- RecyclerView Waktu Sholat -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_prayer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:gravity="center"
+        android:clipToPadding="false"
         android:orientation="horizontal"
+        android:overScrollMode="never"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/currentTime">
+        app:layout_constraintTop_toBottomOf="@id/tv_current_time"
+        tools:itemCount="6"
+        tools:listitem="@layout/prayer_card" />
 
-        <!-- Misal satu item jadwal sholat -->
-        <!-- Satu komponen prayer_card -->
-        <include
-            android:id="@+id/card_dzuhur"
-            layout="@layout/prayer_card" />
 
-        <!-- Tambahkan include lain untuk setiap waktu sholat -->
-        <include
-            android:id="@+id/card_ashar"
-            layout="@layout/prayer_card" />
-
-        <!-- Tambahkan include lain untuk setiap waktu sholat -->
-        <include
-            android:id="@+id/card_ashar"
-            layout="@layout/prayer_card" />
-
-        <!-- Tambahkan include lain untuk setiap waktu sholat -->
-        <include
-            android:id="@+id/card_ashar"
-            layout="@layout/prayer_card" />
-
-        <!-- Tambahkan include lain untuk setiap waktu sholat -->
-        <include
-            android:id="@+id/card_ashar"
-            layout="@layout/prayer_card" />
-
-        <include
-            android:id="@+id/card_ashar"
-            layout="@layout/prayer_card" />
-
-        <!-- Tambahkan card lainnya dengan cara serupa -->
-    </LinearLayout>
-
-    <!-- Info sholat berikutnya -->
-    <TextView
-        android:id="@+id/nextPrayer"
+    <LinearLayout
+        android:id="@+id/ll_next_prayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Ashar dalam 2 jam 15 menit"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/prayerGrid" />
-
-    <!-- Kutipan Quran -->
-    <TextView
-        android:id="@+id/quranQuote"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="“Dan dirikanlah shalat...” - Al-Baqarah: 43"
-        android:textSize="14sp"
-        android:textStyle="italic"
+        android:orientation="vertical"
+        android:paddingHorizontal="100dp"
+        android:paddingVertical="5dp"
+        android:background="@drawable/bg_prayer_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nextPrayer" />
+        app:layout_constraintTop_toBottomOf="@id/rv_prayer">
 
-    <!-- Tombol Tema -->
-    <Button
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/next_time_txt"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="🕌"
+                android:textSize="32sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_next_prayer_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ashar"
+                    android:textColor="@color/accent_blue"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_next_prayer_countdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="dalam 2 jam 15 menit"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- Islamic Quote -->
+
+        <LinearLayout
+            android:id="@+id/ll_quotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/bg_qs_quotes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_next_prayer"
+
+            >
+
+            <TextView
+                android:id="@+id/tv_qs_quotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="Dan dirikanlah shalat, tunaikanlah zakat dan ruku'lah beserta orang-orang yang ruku'"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/tv_qs_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="- QS. Al-Baqarah: 43"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/themeButton"
+        app:backgroundTint="@null"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="🌙 Mode Malam (Auto)"
+        android:textColor="@color/primary_light"
+        android:background="@drawable/bg_mode_default"
+        android:text="🌞 Mode Siang"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
