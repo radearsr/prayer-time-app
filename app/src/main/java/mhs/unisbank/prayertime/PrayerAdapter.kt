@@ -12,6 +12,13 @@ import java.util.TimeZone
 class PrayerAdapter(private val items: List<PrayerTime>) :
     RecyclerView.Adapter<PrayerAdapter.PrayerViewHolder>() {
 
+        private var isDarkMode = false
+
+    fun setDarkMode(enabled: Boolean) {
+        isDarkMode = enabled
+        notifyDataSetChanged()
+    }
+
     inner class PrayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val iconEmoji: TextView = itemView.findViewById(R.id.iconEmoji)
         val prayerName: TextView = itemView.findViewById(R.id.prayerName)
@@ -41,8 +48,15 @@ class PrayerAdapter(private val items: List<PrayerTime>) :
         val cardLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.prayer_card)
         if (isCurrentPrayer) {
             cardLayout.setBackgroundResource(R.drawable.bg_prayer_next)
+            holder.prayerName.setTextColor(holder.itemView.context.resources.getColor(R.color.next_prayer_border_light))
         } else {
-            cardLayout.setBackgroundResource(R.drawable.bg_prayer_card)
+            if (isDarkMode) {
+                cardLayout.setBackgroundResource(R.drawable.bg_prayer_card_dark)
+                holder.prayerName.setTextColor(holder.itemView.context.resources.getColor(R.color.surface_light))
+            } else {
+                cardLayout.setBackgroundResource(R.drawable.bg_prayer_card)
+                holder.prayerName.setTextColor(holder.itemView.context.resources.getColor(R.color.surface_dark))
+            }
         }
     }
 

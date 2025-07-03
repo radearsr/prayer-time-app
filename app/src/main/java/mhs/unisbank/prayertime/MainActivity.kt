@@ -1,21 +1,25 @@
 package mhs.unisbank.prayertime
 
-import android.graphics.Color
-import android.graphics.LinearGradient
-import android.graphics.Shader
+import android.app.Activity
+import android.content.Intent
+import android.icu.util.IslamicCalendar
+import android.icu.util.Calendar as IslamicCal
+import android.icu.util.TimeZone as IslamicTimeZone
+import android.icu.util.ULocale
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
@@ -23,7 +27,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import java.util.logging.Logger
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,14 +45,31 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvQsSource: TextView
     private lateinit var themeButton: Button
     private lateinit var mainLayout: ConstraintLayout
+    private lateinit var ivSetting: ImageView
+    private lateinit var ivDate: ImageView
+    private lateinit var llNextPrayer: LinearLayout
+    private lateinit var tvPrayNextTxt: TextView
+    private lateinit var llQuotes: LinearLayout
+    private lateinit var prayTimeAdapter: PrayerAdapter
+
 
     // INIT TIME
     private lateinit var timeHandler: Handler
     private lateinit var timeRunnable: Runnable
 
+    // DEFAULT LOCATION (SEMARANG)
+    var longitude: Double = 106.84513
+    var latitude: Double = -6.21462
+
+    private lateinit var quoteHandler: Handler
+    private lateinit var quoteRunnable: Runnable
+    private var currentQuoteIndex = 0
+
     private var isDarkMode = false // flag toggle tema
 
     private lateinit var todayPrayerTimes: List<PrayerTime>
+
+    private lateinit var locationResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +79,22 @@ class MainActivity : AppCompatActivity() {
         setupCurrentDate()
         startLiveClock()
         setupPrayTimeRecyclerView()
+        setupActionActivity()
+        startQuoteSwitcher()
+    }
+
+    private fun setupActionActivity() {
+        locationResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                latitude = data?.getDoubleExtra("latitude", 0.0) ?: 0.0
+                longitude = data?.getDoubleExtra("longitude", 0.0) ?: 0.0
+                tvLocation.text = data?.getStringExtra("address") ?: "Lokasi belum tersedia"
+                setupPrayTimeRecyclerView()
+            }
+        }
     }
 
     private fun setupCurrentDate() {
@@ -66,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         sdfDate.timeZone = TimeZone.getTimeZone("Asia/Jakarta") // supaya tanggal sesuai WIB
         val todayDate = sdfDate.format(Date())
         tvCurrentDate.text = todayDate
+        tvHijriahDate.text = getHijriDate()
     }
 
     private fun setupView() {
@@ -83,19 +120,69 @@ class MainActivity : AppCompatActivity() {
         tvQsSource = findViewById(R.id.tv_qs_source)
         themeButton = findViewById(R.id.themeButton)
         mainLayout = findViewById(R.id.mainLayout)
+        ivSetting = findViewById(R.id.iv_setting)
+        ivDate = findViewById(R.id.iv_date)
+        llNextPrayer = findViewById(R.id.ll_next_prayer)
+        tvPrayNextTxt = findViewById(R.id.tv_pray_next_txt)
+        llQuotes = findViewById(R.id.ll_quotes)
+
+        ivSetting.setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
+            locationResultLauncher.launch(intent)
+        }
 
         themeButton.setOnClickListener {
             if (isDarkMode) {
-                // Mode terang
-                mainLayout.setBackgroundResource(R.drawable.gradient_background_light)
-                themeButton.text = "🌙 Mode Malam"
+                setupViewDarkMode()
             } else {
-                // Mode gelap
-                mainLayout.setBackgroundResource(R.drawable.gradient_background_dark)
-                themeButton.text = "☀️ Mode Terang"
+                setupViewLightMode()
             }
             isDarkMode = !isDarkMode
         }
+    }
+
+    private fun setupViewDarkMode() {
+        tvTitle.setTextColor(ContextCompat.getColor(this, R.color.primary_light))
+        mainLayout.setBackgroundResource(R.drawable.gradient_background_light)
+        tvLocation.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        tvHijriahDate.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        tvCurrentTime.setTextColor(ContextCompat.getColor(this, R.color.primary_light))
+        tvCurrentDate.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        ivLocation.setImageResource(R.drawable.ic_location)
+        ivDate.setImageResource(R.drawable.ic_calendar)
+        llNextPrayer.setBackgroundResource(R.drawable.bg_prayer_card)
+        tvPrayNextTxt.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        tvNextPrayerCountdown.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+        llQuotes.setBackgroundResource(R.drawable.bg_qs_quotes)
+        tvQsQuotes.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        tvQsSource.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+        prayTimeAdapter.setDarkMode(false)
+        themeButton.setBackgroundResource(R.drawable.bg_mode_default)
+        tvNextPrayerName.setTextColor(ContextCompat.getColor(this, R.color.primary_light))
+        themeButton.setTextColor(ContextCompat.getColor(this, R.color.background_dark))
+        themeButton.text = "🌙 Mode Malam"
+    }
+
+    private fun setupViewLightMode() {
+        tvTitle.setTextColor(ContextCompat.getColor(this, R.color.primary_dark))
+        mainLayout.setBackgroundResource(R.drawable.gradient_background_dark)
+        tvLocation.setTextColor(ContextCompat.getColor(this, R.color.surface_light))
+        tvHijriahDate.setTextColor(ContextCompat.getColor(this, R.color.surface_light))
+        tvCurrentTime.setTextColor(ContextCompat.getColor(this, R.color.primary_dark))
+        tvCurrentDate.setTextColor(ContextCompat.getColor(this, R.color.surface_light))
+        ivLocation.setImageResource(R.drawable.ic_location_dark)
+        ivDate.setImageResource(R.drawable.ic_calendar_dark)
+        llNextPrayer.setBackgroundResource(R.drawable.bg_prayer_card_dark)
+        tvPrayNextTxt.setTextColor(ContextCompat.getColor(this, R.color.surface_light))
+        tvNextPrayerCountdown.setTextColor(ContextCompat.getColor(this, R.color.text_secondary_dark))
+        llQuotes.setBackgroundResource(R.drawable.bg_qs_quotes_dark)
+        tvQsQuotes.setTextColor(ContextCompat.getColor(this, R.color.surface_light))
+        tvQsSource.setTextColor(ContextCompat.getColor(this, R.color.text_secondary_dark))
+        prayTimeAdapter.setDarkMode(true)
+        themeButton.setBackgroundResource(R.drawable.bg_mode_dark)
+        tvNextPrayerName.setTextColor(ContextCompat.getColor(this, R.color.primary_dark))
+        themeButton.setTextColor(ContextCompat.getColor(this, R.color.surface_light))
+        themeButton.text = "☀️ Mode Terang"
     }
 
     private fun startLiveClock() {
@@ -118,6 +205,28 @@ class MainActivity : AppCompatActivity() {
         timeHandler.post(timeRunnable)
     }
 
+    private fun startQuoteSwitcher() {
+        val quotes = listOf(
+            Pair("Dan dirikanlah shalat, tunaikanlah zakat dan ruku'lah beserta orang-orang yang ruku'", "- QS. Al-Baqarah: 43"),
+            Pair("Sesungguhnya shalat itu mencegah dari perbuatan keji dan mungkar.", "- QS. Al-Ankabut: 45"),
+            Pair("Peliharalah semua shalat dan shalat wustha. Berdirilah karena Allah (dalam shalatmu) dengan khusyuk.", "- QS. Al-Baqarah: 238"),
+            Pair("Hai orang-orang yang beriman, jadikanlah sabar dan shalat sebagai penolongmu.", "- QS. Al-Baqarah: 153"),
+            Pair("Sungguh, beruntunglah orang-orang yang beriman, (yaitu) yang khusyuk dalam shalatnya.", "- QS. Al-Mu’minun: 1-2")
+        )
+        quoteHandler = Handler(Looper.getMainLooper())
+        quoteRunnable = object : Runnable {
+            override fun run() {
+                val (text, source) = quotes[currentQuoteIndex]
+                tvQsQuotes.text = text
+                tvQsSource.text = source
+
+                currentQuoteIndex = (currentQuoteIndex + 1) % quotes.size
+                quoteHandler.postDelayed(this, 5000) // ganti setiap 5 detik
+            }
+        }
+        quoteHandler.post(quoteRunnable)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -126,10 +235,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPrayTimeRecyclerView() {
         val prayerTimes = getPrayerTimesForToday()
-        val adapter = PrayerAdapter(prayerTimes)
-        rvPrayer.addItemDecoration(CenterSpacingDecoration(18))
+        prayTimeAdapter = PrayerAdapter(prayerTimes)
+        val spacing = if (isTvDevice()) 18 else 75
+        Log.d("MainActivity", "Spacing: $spacing")
+        rvPrayer.addItemDecoration(CenterSpacingDecoration(spacing))
         rvPrayer.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        rvPrayer.adapter = adapter
+        rvPrayer.adapter = prayTimeAdapter
     }
 
 
@@ -139,8 +250,6 @@ class MainActivity : AppCompatActivity() {
         val month = calendar.get(Calendar.MONTH) + 1
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val longitude = 106.84513
-        val latitude = -6.21462
         val timeZone = 7 // WIB
         val fajrTwilight = -20.0
         val ishaTwilight = -18.0
@@ -194,6 +303,26 @@ class MainActivity : AppCompatActivity() {
             "dalam $minutes menit"
         }
     }
+
+
+    private fun isTvDevice(): Boolean {
+        val uiModeManager = getSystemService(UI_MODE_SERVICE) as android.app.UiModeManager
+        return uiModeManager.currentModeType == android.content.res.Configuration.UI_MODE_TYPE_TELEVISION
+    }
+
+    private fun getHijriDate(): String {
+        val months = listOf("Muharram", "Safar", "Rabiul Awal", "Rabiul Akhir", "Jumadil Awal",
+            "Jumadil Akhir", "Rajab", "Sya'ban", "Ramadhan", "Syawal", "Dzulkaidah", "Dzulhijjah")
+        val tz = IslamicTimeZone.getTimeZone("Asia/Jakarta")
+        val uLocale = ULocale("id@calendar=islamic-umalqura")
+        val islamicCalendar = IslamicCalendar(tz, uLocale)
+        val day = islamicCalendar.get(IslamicCal.DAY_OF_MONTH)
+        val monthIndex = islamicCalendar.get(IslamicCal.MONTH)
+        val month = months[monthIndex.coerceIn(0, months.size - 1)]
+        val year = islamicCalendar.get(IslamicCal.YEAR)
+        return "$day $month $year H"
+    }
+
 
     private fun parseTimeToMinutes(time: String): Int {
         val parts = time.split(":")

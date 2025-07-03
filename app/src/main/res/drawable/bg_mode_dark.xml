@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:startColor="#FEF3C7"
-        android:endColor="#FED7AA"
+        android:startColor="@color/cardview_dark_background"
+        android:endColor="@color/cardview_dark_background"
         android:type="linear" />
     <corners android:radius="16dp" />
     <stroke
         android:width="2dp"
-        android:color="@color/next_prayer_border_light" />
+        android:color="@color/primary_dark" />
 </shape>

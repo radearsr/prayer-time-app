@@ -27,9 +27,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Jadwal Sholat"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/primary_light"
+        android:textColor="@color/decorative_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,13 +52,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Jakarta, Indonesia"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
     <ImageView
-        android:id="@+id/iv_date"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_marginEnd="5dp"
@@ -74,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Senin, 01 Juli 2025"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="25 Dzulqa'dah 1446 H"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_current_date" />
@@ -101,18 +100,18 @@
         app:layout_constraintBottom_toBottomOf="@id/tv_current_time"
         app:layout_constraintEnd_toStartOf="@id/tv_current_time"
         app:layout_constraintTop_toTopOf="@id/tv_current_time"
-        app:tint="@color/accent_blue" />
+        app:tint="@color/decorative_blue" />
 
     <TextView
         android:id="@+id/tv_current_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="monospace"
         android:text="15:30:12"
         android:textAlignment="center"
-        android:textColor="@color/accent_blue"
-        android:textSize="18sp"
+        android:textColor="@color/decorative_blue"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +122,7 @@
         android:id="@+id/rv_prayer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:overScrollMode="never"
@@ -146,19 +145,19 @@
         android:orientation="vertical"
         android:paddingHorizontal="100dp"
         android:paddingVertical="5dp"
+        android:elevation="4dp"
         android:background="@drawable/bg_prayer_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_prayer">
 
         <TextView
-            android:id="@+id/tv_pray_next_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/next_time_txt"
             android:textColor="@color/text_primary"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -172,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:text="🕌"
-                android:textSize="16sp" />
+                android:textSize="32sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -186,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ashar"
                     android:textColor="@color/accent_blue"
-                    android:textSize="16sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -195,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:text="dalam 2 jam 15 menit"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -206,53 +205,54 @@
 
     <!-- Islamic Quote -->
 
-        <LinearLayout
-            android:id="@+id/ll_quotes"
+    <LinearLayout
+        android:id="@+id/ll_quotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:elevation="4dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_qs_quotes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_next_prayer"
+
+        >
+
+        <TextView
+            android:id="@+id/tv_qs_quotes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="5dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="@drawable/bg_qs_quotes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_next_prayer"
+            android:text="Dan dirikanlah shalat, tunaikanlah zakat dan ruku'lah beserta orang-orang yang ruku'"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
-            >
+        <TextView
+            android:id="@+id/tv_qs_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- QS. Al-Baqarah: 43"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/tv_qs_quotes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:text="Dan dirikanlah shalat, tunaikanlah zakat dan ruku'lah beserta orang-orang yang ruku'"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="italic" />
-
-            <TextView
-                android:id="@+id/tv_qs_source"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- QS. Al-Baqarah: 43"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
-
-        </LinearLayout>
+    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/themeButton"
         app:backgroundTint="@null"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:textColor="@color/primary_light"
         android:background="@drawable/bg_mode_default"
         android:text="🌞 Mode Siang"
-        android:textSize="12sp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
