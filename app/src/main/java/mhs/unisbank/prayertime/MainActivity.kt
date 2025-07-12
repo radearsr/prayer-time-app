@@ -71,6 +71,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var locationResultLauncher: ActivityResultLauncher<Intent>
 
+    private var locationList: List<LocationModel> = emptyList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -80,6 +82,7 @@ class MainActivity : AppCompatActivity() {
             setContentView(R.layout.activity_main)
         }
         setupView()
+        loadAllLocations()
         setupCurrentDate()
         startLiveClock()
         setupPrayTimeRecyclerView()
@@ -95,10 +98,27 @@ class MainActivity : AppCompatActivity() {
                 val data = result.data
                 latitude = data?.getDoubleExtra("latitude", 0.0) ?: 0.0
                 longitude = data?.getDoubleExtra("longitude", 0.0) ?: 0.0
-                tvLocation.text = data?.getStringExtra("address") ?: "Lokasi belum tersedia"
+                val address = data?.getStringExtra("address") ?: "Lokasi belum tersedia"
+                tvLocation.text = address
                 setupPrayTimeRecyclerView()
+                LocationDao.insert(this, latitude, longitude, address)
             }
         }
+    }
+
+    private fun loadAllLocations() {
+        Thread {
+            val result = LocationDao.getAll(this)
+            runOnUiThread {
+                locationList = result
+                if (result.isNotEmpty()) {
+                    val latest = result.first()
+                    latitude = latest.lat
+                    longitude = latest.lon
+                    tvLocation.text = latest.address ?: "Lokasi belum tersedia"
+                }
+            }
+        }.start()
     }
 
     private fun setupCurrentDate() {
