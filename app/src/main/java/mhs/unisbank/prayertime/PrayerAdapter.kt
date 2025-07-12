@@ -1,5 +1,6 @@
 package mhs.unisbank.prayertime
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,15 @@ class PrayerAdapter(private val items: List<PrayerTime>) :
 
         private var isDarkMode = false
 
+        private var isTvDevice = true
+
     fun setDarkMode(enabled: Boolean) {
         isDarkMode = enabled
+        notifyDataSetChanged()
+    }
+
+    fun setTvDevice(enabled: Boolean) {
+        isTvDevice = enabled
         notifyDataSetChanged()
     }
 
@@ -26,8 +34,11 @@ class PrayerAdapter(private val items: List<PrayerTime>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrayerViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.prayer_card, parent, false)
+        val view = if (isTvDevice) {
+            LayoutInflater.from(parent.context).inflate(R.layout.prayer_card_tv, parent, false)
+        } else {
+            LayoutInflater.from(parent.context).inflate(R.layout.prayer_card, parent, false)
+        }
         return PrayerViewHolder(view)
     }
 
@@ -46,6 +57,7 @@ class PrayerAdapter(private val items: List<PrayerTime>) :
         val isCurrentPrayer = currentMinutes in thisTime until nextTime
 
         val cardLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.prayer_card)
+        Log.d("PrayerAdapter", "CardLayout: $cardLayout")
         if (isCurrentPrayer) {
             cardLayout.setBackgroundResource(R.drawable.bg_prayer_next)
             holder.prayerName.setTextColor(holder.itemView.context.resources.getColor(R.color.next_prayer_border_light))

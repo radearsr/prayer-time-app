@@ -1,0 +1,52 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/prayer_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="35dp"
+    android:paddingVertical="25dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/bg_prayer_card"
+    android:elevation="4dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Icon emoji -->
+    <TextView
+        android:id="@+id/iconEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="🌤️"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Nama Sholat -->
+    <TextView
+        android:id="@+id/prayerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Ashar"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iconEmoji" />
+
+    <!-- Waktu Sholat -->
+    <TextView
+        android:id="@+id/prayerTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="15:30"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/prayerName" />
+</androidx.constraintlayout.widget.ConstraintLayout>

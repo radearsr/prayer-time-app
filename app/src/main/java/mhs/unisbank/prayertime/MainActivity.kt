@@ -74,7 +74,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        if (isTvDevice()) {
+            setContentView(R.layout.activity_main_tv)
+        } else {
+            setContentView(R.layout.activity_main)
+        }
         setupView()
         setupCurrentDate()
         startLiveClock()
@@ -236,6 +240,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupPrayTimeRecyclerView() {
         val prayerTimes = getPrayerTimesForToday()
         prayTimeAdapter = PrayerAdapter(prayerTimes)
+        prayTimeAdapter.setTvDevice(isTvDevice())
         val spacing = if (isTvDevice()) 18 else 75
         Log.d("MainActivity", "Spacing: $spacing")
         rvPrayer.addItemDecoration(CenterSpacingDecoration(spacing))

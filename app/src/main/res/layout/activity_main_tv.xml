@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="20dp"
-        app:tint="@color/accent_amber" />
+        app:tint="@color/primary_light" />
 
     <!-- Judul -->
     <TextView
